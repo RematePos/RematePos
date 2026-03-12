@@ -1,0 +1,487 @@
+# Architecture Decision Records (ADR)
+## Proyecto: RematePOS
+
+Este documento recopila las decisiones arquitectónicas del sistema RematePOS.  
+Cada ADR describe una decisión técnica importante, su contexto, impacto y aplicación dentro del proyecto.
+
+---
+
+# ADR-001 — Adoptar arquitectura por capas / hexagonal ligera en cada microservicio
+
+**Responsable:** Carlos Andrés Villamil Yusunguaira  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+El microservicio de productos puede crecer rápidamente. Si se mezcla controlador, lógica de negocio y acceso a datos en la misma clase, el código se vuelve difícil de mantener.
+
+## Decisión
+Separar cada microservicio en capas claras:
+
+- controller  
+- application/service  
+- domain  
+- infrastructure/repository  
+
+## Impacto
+Beneficios:
+- Mejor mantenibilidad
+- Código más organizado
+- Facilita pruebas
+
+Costos:
+- Reorganización de clases existentes
+
+## Aplicación en RematePOS
+Mover la lógica del microservicio de productos para que el controller solo gestione solicitudes HTTP.
+
+---
+
+# ADR-002 — Usar API Gateway como punto único de entrada
+
+**Responsable:** Kevin Santiago Cuesta Hernández  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+Si el sistema evoluciona hacia microservicios, no es conveniente que el frontend consuma cada servicio directamente.
+
+## Decisión
+Implementar un API Gateway que centralice el acceso al sistema.
+
+## Impacto
+Beneficios:
+- Control centralizado
+- Seguridad
+- Simplificación del consumo de APIs
+
+Costos:
+- Agrega un componente adicional
+
+## Aplicación en RematePOS
+El frontend consumirá el Gateway en lugar de consumir directamente el microservicio de productos.
+
+---
+
+# ADR-003 — Base de datos por microservicio
+
+**Responsable:** Kevin Santiago Cuesta Hernández  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+Compartir una sola base de datos entre microservicios genera acoplamiento.
+
+## Decisión
+Cada microservicio debe tener su propia base de datos o esquema independiente.
+
+## Impacto
+Beneficios:
+- Mayor independencia
+- Escalabilidad
+
+Costos:
+- Consultas entre servicios más complejas
+
+## Aplicación en RematePOS
+El microservicio de productos administrará su propia base de datos.
+
+---
+
+# ADR-004 — No exponer entidades directamente; usar DTOs
+
+**Responsable:** Carlos Andrés Villamil Yusunguaira  
+**Tipo:** Patrón de diseño  
+**Estado:** Propuesto  
+
+## Contexto
+Exponer entidades directamente puede revelar información interna del sistema.
+
+## Decisión
+Utilizar DTOs para todas las solicitudes y respuestas del API.
+
+## Impacto
+Beneficios:
+- Seguridad
+- Mejor control del contrato API
+
+Costos:
+- Clases adicionales
+
+## Aplicación en RematePOS
+Crear:
+
+- ProductRequestDTO  
+- ProductResponseDTO  
+- ProductListDTO  
+
+---
+
+# ADR-005 — Validación de datos en backend con Bean Validation
+
+**Responsable:** Carlos Andrés Villamil Yusunguaira  
+**Tipo:** Patrón de diseño  
+**Estado:** Propuesto  
+
+## Contexto
+Los datos enviados desde el frontend pueden ser inválidos.
+
+## Decisión
+Implementar validaciones con Bean Validation.
+
+Ejemplos:
+- `@NotBlank`
+- `@NotNull`
+- `@Positive`
+- `@Size`
+
+## Impacto
+Beneficios:
+- Mayor integridad de datos
+- API más robusta
+
+## Aplicación en RematePOS
+Validar creación y edición de productos.
+
+---
+
+# ADR-006 — Manejo global de errores con @RestControllerAdvice
+
+**Responsable:** Carlos Andrés Villamil Yusunguaira  
+**Tipo:** Patrón comportamental  
+**Estado:** Propuesto  
+
+## Contexto
+Si cada controlador maneja errores de forma distinta, la API se vuelve inconsistente.
+
+## Decisión
+Centralizar el manejo de errores con `@RestControllerAdvice`.
+
+## Impacto
+Beneficios:
+- Respuestas uniformes
+- Código más limpio
+
+## Aplicación en RematePOS
+Estructura estándar de error:
+
+- timestamp  
+- status  
+- error  
+- message  
+- path  
+
+---
+
+# ADR-007 — Delimitar transacciones en capa de servicio
+
+**Responsable:** Carlos Andrés Villamil Yusunguaira  
+**Tipo:** Patrón comportamental  
+**Estado:** Propuesto  
+
+## Contexto
+Operaciones complejas deben ejecutarse completamente o revertirse.
+
+## Decisión
+Usar `@Transactional` en métodos de servicio.
+
+## Impacto
+Beneficios:
+- Consistencia de datos
+
+## Aplicación en RematePOS
+Usar transacciones en operaciones de creación y actualización de productos.
+
+---
+
+# ADR-008 — Implementar patrón Specification o filtros dinámicos
+
+**Responsable:** Kevin Santiago Cuesta Hernández  
+**Tipo:** Patrón de diseño  
+**Estado:** Propuesto  
+
+## Contexto
+Los productos requieren múltiples filtros en búsquedas.
+
+## Decisión
+Implementar filtros dinámicos mediante el patrón Specification.
+
+## Impacto
+Beneficios:
+- Consultas flexibles
+- Código más limpio
+
+## Aplicación en RematePOS
+Filtros por:
+
+- nombre  
+- categoría  
+- precio  
+- estado  
+- disponibilidad  
+
+---
+
+# ADR-009 — Comunicación entre microservicios orientada a eventos
+
+**Responsable:** Kevin Santiago Cuesta Hernández  
+**Tipo:** Patrón comportamental  
+**Estado:** Propuesto  
+
+## Contexto
+Las llamadas HTTP entre microservicios generan acoplamiento.
+
+## Decisión
+Adoptar comunicación basada en eventos.
+
+## Impacto
+Beneficios:
+- Desacoplamiento
+- Escalabilidad
+
+## Aplicación en RematePOS
+Eventos posibles:
+
+- ProductoCreado  
+- StockActualizado  
+- VentaRegistrada  
+
+---
+
+# ADR-010 — Patrón Outbox para eventos
+
+**Responsable:** Kevin Santiago Cuesta Hernández  
+**Tipo:** Patrón de diseño  
+**Estado:** Propuesto  
+
+## Contexto
+Si un evento falla después de guardar datos, el sistema queda inconsistente.
+
+## Decisión
+Aplicar el patrón Outbox.
+
+## Impacto
+Beneficios:
+- Garantía de publicación de eventos
+
+## Aplicación en RematePOS
+Crear tabla `outbox_events`.
+
+---
+
+# ADR-011 — Configuración externa por ambiente
+
+**Responsable:** Juan Sebastián Murcia Vargas  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+Las configuraciones no deben estar hardcodeadas.
+
+## Decisión
+Separar configuraciones por ambiente.
+
+## Impacto
+Beneficios:
+- Fácil despliegue
+- Menos errores
+
+## Aplicación en RematePOS
+Perfiles:
+
+- dev  
+- test  
+- prod  
+
+---
+
+# ADR-012 — Documentar API con OpenAPI / Swagger
+
+**Responsable:** Andrés Felipe Ardila Fajardo  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+Frontend y backend necesitan documentación clara.
+
+## Decisión
+Documentar todos los endpoints con OpenAPI.
+
+## Aplicación en RematePOS
+Documentar endpoints de productos.
+
+---
+
+# ADR-013 — Organización del frontend por módulos
+
+**Responsable:** Andrés Felipe Ardila Fajardo  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+Un frontend desorganizado se vuelve difícil de mantener.
+
+## Decisión
+Separar frontend por módulos funcionales.
+
+## Aplicación en RematePOS
+Módulos:
+
+- productos  
+- ventas  
+- inventario  
+- auth  
+
+---
+
+# ADR-014 — Componentes compartidos en frontend
+
+**Responsable:** Andrés Felipe Ardila Fajardo  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+Muchos componentes se repiten en la interfaz.
+
+## Decisión
+Crear módulo `shared`.
+
+## Aplicación en RematePOS
+Componentes reutilizables:
+
+- tablas  
+- modales  
+- botones  
+- alertas  
+
+---
+
+# ADR-015 — Autenticación y autorización con JWT
+
+**Responsable:** Andrés Felipe Ardila Fajardo  
+**Tipo:** Patrón comportamental  
+**Estado:** Propuesto  
+
+## Contexto
+El sistema requiere control de acceso por roles.
+
+## Decisión
+Implementar autenticación basada en JWT.
+
+## Aplicación en RematePOS
+Roles:
+
+- admin  
+- cajero  
+- bodega  
+
+---
+
+# ADR-016 — Manejo de estado frontend por feature
+
+**Responsable:** Andrés Felipe Ardila Fajardo  
+**Tipo:** Patrón comportamental  
+**Estado:** Propuesto  
+
+## Contexto
+El manejo de estado puede volverse complejo.
+
+## Decisión
+Gestionar estado por módulo.
+
+## Aplicación en RematePOS
+Estado para:
+
+- listado de productos  
+- filtros  
+- loading  
+- errores  
+
+---
+
+# ADR-017 — Logging estructurado con correlation ID
+
+**Responsable:** Juan Sebastián Murcia Vargas  
+**Tipo:** Patrón comportamental  
+**Estado:** Propuesto  
+
+## Contexto
+Es difícil rastrear solicitudes en sistemas distribuidos.
+
+## Decisión
+Agregar correlationId en cada request.
+
+## Impacto
+Beneficios:
+- Mejor trazabilidad
+
+## Aplicación en RematePOS
+Incluir correlationId en logs.
+
+---
+
+# ADR-018 — Docker Compose para entorno local
+
+**Responsable:** Juan Sebastián Murcia Vargas  
+**Tipo:** Patrón estructural  
+**Estado:** Propuesto  
+
+## Contexto
+Los entornos de desarrollo pueden variar.
+
+## Decisión
+Usar Docker Compose.
+
+## Impacto
+Beneficios:
+- Entorno consistente
+
+## Aplicación en RematePOS
+Levantar servicios con `docker-compose`.
+
+---
+
+# ADR-019 — Pipeline de integración continua
+
+**Responsable:** Juan Sebastián Murcia Vargas  
+**Tipo:** Patrón de diseño  
+**Estado:** Propuesto  
+
+## Contexto
+Los cambios sin control pueden romper el sistema.
+
+## Decisión
+Configurar CI.
+
+## Impacto
+Beneficios:
+- Validación automática
+
+## Aplicación en RematePOS
+Ejecutar:
+
+- build  
+- tests  
+- lint  
+
+---
+
+# ADR-020 — Caché para consultas de catálogo
+
+**Responsable:** Juan Sebastián Murcia Vargas  
+**Tipo:** Patrón de diseño  
+**Estado:** Propuesto  
+
+## Contexto
+Las consultas de productos son frecuentes.
+
+## Decisión
+Cachear consultas de productos.
+
+## Impacto
+Beneficios:
+- Mejor rendimiento
+- Menos carga en base de datos
+
+## Aplicación en RematePOS
+Cachear listados y búsquedas de productos.
