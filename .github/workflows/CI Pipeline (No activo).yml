@@ -1,0 +1,105 @@
+name: CI Pipeline (No activo)
+
+# Define en qué eventos se ejecutaría el pipeline 
+on:
+  push:
+    branches: [ "main", "qa", "develop" ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    # Esta condición impide que el job se ejecute
+    if: false  # Pipeline deshabilitado intencionalmente
+
+    # Define el sistema operativo donde correría el pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+    # Paso 1: Clonar el repositorio
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+
+   
+    # SECCIÓN FRONTEND
+
+    # Instala las dependencias del frontend
+    - name: Instalar dependencias frontend
+      working-directory: ./frontend
+      run: npm install
+
+    # Ejecuta las pruebas del frontend
+    - name: Ejecutar pruebas frontend
+      working-directory: ./frontend
+      run: npm test -- --watchAll=false
+
+    # Genera el build del frontend
+    - name: Construir frontend
+      working-directory: ./frontend
+      run: npm run build
+
+   
+    # SECCIÓN BACKEND
+  
+
+    # Instala dependencias del microservicio de autenticación
+    - name: Instalar dependencias auth-microservice
+      working-directory: ./services/auth-microservice
+      run: npm install
+
+    # Ejecuta pruebas del microservicio de autenticación
+    - name: Ejecutar pruebas auth-microservice
+      working-directory: ./services/auth-microservice
+      run: npm test
+
+    # Instala dependencias del microservicio de usuarios
+    - name: Instalar dependencias customer-microservice
+      working-directory: ./services/customer-microservice
+      run: npm install
+
+    # Ejecuta pruebas del microservicio de usuarios
+    - name: Ejecutar pruebas customer-microservice
+      working-directory: ./services/customer-microservice
+      run: npm test
+
+    # Instala dependencias del microservicio de productos
+    - name: Instalar dependencias product-microservice
+      working-directory: ./services/product-microservice
+      run: npm install
+
+    # Ejecuta pruebas del microservicio de productos
+    - name: Ejecutar pruebas product-microservice
+      working-directory: ./services/product-microservice
+      run: npm test
+
+    # Instala dependencias del microservicio de carrito
+    - name: Instalar dependencias cart-microservice
+      working-directory: ./services/cart-microservice
+      run: npm install
+
+    # Ejecuta pruebas del microservicio de carrito
+    - name: Ejecutar pruebas cart-microservice
+      working-directory: ./services/cart-microservice
+      run: npm test
+    # =========================
+    # SECCIÓN DE INTEGRACIÓN CON DOCKER
+    # =========================
+
+    # Construye las imágenes Docker definidas en docker-compose.yml
+    - name: Construir imágenes Docker
+      run: docker-compose build
+
+    # Levanta los contenedores en segundo plano
+    - name: Levantar servicios
+      run: docker-compose up -d
+
+    # Espera unos segundos para asegurar que los servicios estén disponibles
+    - name: Esperar servicios
+      run: sleep 10
+
+    # Ejecuta una prueba básica de integración verificando que el sistema responda
+    - name: Prueba de integración
+      run: curl http://localhost:3000 || exit 1
+
+    # Detiene y elimina los contenedores para limpiar el entorno
+    - name: Detener servicios
+      run: docker-compose down
