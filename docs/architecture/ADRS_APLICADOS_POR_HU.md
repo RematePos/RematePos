@@ -106,3 +106,45 @@ ADR-002 ya esta aplicado mediante la HU-053.
 | HU-82 | Ambientes DEV, QA y produccion | ADR-003, ADR-011, ADR-018 | RematePos-Backend / RematePos-bd |
 | HU-83 | Docker Compose ecosistema RematePOS | ADR-018 | RematePos-Backend / RematePos-api / RematePos-bd |
 | HU-84 | Documentar ADRs aplicados por HU | ADR-084 | RematePos |
+
+## ADRs por integrante
+
+### Carlos Andres Villamil Yusunguaira - Backend / DevOps - CAVY
+
+| ADR | Decision | HU / rama | Repositorio | Evidencia | Estado |
+| --- | --- | --- | --- | --- | --- |
+| ADR-001 | Arquitectura por capas / hexagonal ligera | HU-11, HU-12, HU-66 / `feature/HU-66-CAVY-purchase-service-split-plan` | RematePos-Backend | Microservicios Spring Boot separados por controller, service, repository, dto, model y client. | En implementacion |
+| ADR-004 | Uso de DTOs | HU-28, HU-33, HU-61 / `feature/HU-61-CAVY-payment-model` | RematePos-Backend | DTOs para checkout, pago, webhook, respuesta de compra y factura. | En implementacion |
+| ADR-005 | Bean Validation | HU-22, HU-28, HU-62 / `feature/HU-62-CAVY-cash-payment-flow` | RematePos-Backend | Validaciones de request para producto, cantidad, pago y montos. | En implementacion |
+| ADR-006 | Manejo global de errores | HU-35, HU-37, HU-38 / `feature/HU-35-CAVY-invoice-recent-endpoint` | RematePos-Backend | Factura inexistente responde `404` y no `500`; errores distribuidos siguen pendientes de estandarizacion completa. | En implementacion |
+| ADR-007 | Transacciones en capa de servicio | HU-65 / `feature/HU-65-CAVY-sync-payment-sale-inventory-invoice` | RematePos-Backend | Venta, pago, descuento de inventario y factura se coordinan desde service layer. | En implementacion |
+
+### Kevin Santiago Cuesta - Product Owner - KSCH
+
+| ADR | Decision | HU / rama | Repositorio | Evidencia | Estado |
+| --- | --- | --- | --- | --- | --- |
+| ADR-002 | API Gateway | HU-053 / `feature/HU-053-CAVY-api-gateway` | RematePos-api | Gateway standalone, rutas a microservicios, CORS corregido, README y PR Draft hacia `develop`. | Aplicado |
+| ADR-003 | Base de datos por microservicio | HU-13, HU-060, HU-82 / `feature/HU-82-CAVY-environment-strategy` | RematePos-bd / RematePos-Backend | Ambientes independientes y migraciones versionadas estan identificados. | En implementacion |
+| ADR-008 | Specification / filtros dinamicos | HU-055 / `feature/HU-055-CAVY-dynamic-product-filters` | RematePos-Backend | Requiere HU dedicada para filtros escalables en catalogo. | Pendiente |
+| ADR-009 | Comunicacion orientada a eventos | HU-054, HU-67, HU-68, HU-69 | RematePos-Backend | Planeado para separar purchase-service en sales/payment/cash-register/billing. | Planeado |
+| ADR-010 | Outbox | HU-085 / `feature/HU-085-CAVY-outbox-transaction-pattern` | RematePos-Backend | Requiere HU nueva para garantizar consistencia eventual entre pago, inventario y facturacion. | Pendiente |
+
+### Felipe Ardilla - Frontend - AFAF
+
+| ADR | Decision | HU / rama | Repositorio | Evidencia | Estado |
+| --- | --- | --- | --- | --- | --- |
+| ADR-012 | OpenAPI / Swagger | HU-086 / `feature/HU-086-AFAF-openapi-documentation` | RematePos-Backend / RematePos-api | Requiere documentacion OpenAPI consumible por frontend y QA. | Pendiente |
+| ADR-013 | Frontend por modulos/features | HU-050, HU-030, HU-035 / `feature/HU-30-AFAF-pos-sales-flow` | RematePos-Frontend | Frontend organizado por features como sales, billing, inventory, customers. | En implementacion |
+| ADR-014 | Componentes compartidos | HU-051 / `feature/HU-051-AFAF-shared-components-library` | RematePos-Frontend | Requiere extraer controles comunes para botones, formularios, tablas y estados. | Pendiente |
+| ADR-015 | JWT y guards | HU-073, HU-074, HU-075 / `feature/HU-073-AFAF-frontend-visual-security` | RematePos-Frontend / RematePos-api | Seguridad visual, persistencia de sesion y guards estan planificados. | Planeado |
+| ADR-016 | Estado frontend por feature | HU-052 / `feature/HU-052-AFAF-feature-state-management` | RematePos-Frontend | Requiere formalizar estado de carrito, factura, sesion y productos por feature. | Pendiente |
+
+### Juan Sebastian Murcia - QA - JSMV
+
+| ADR | Decision | HU / rama | Repositorio | Evidencia | Estado |
+| --- | --- | --- | --- | --- | --- |
+| ADR-011 | Configuracion externa por ambiente | HU-056, HU-082 / `feature/HU-82-CAVY-environment-strategy` | RematePos-Backend / RematePos-api | Variables por ambiente en frontend, gateway y compose estan identificadas. | En implementacion |
+| ADR-017 | Logging estructurado y correlation ID | HU-087 / `feature/HU-087-JSMV-structured-logging-correlation-id` | RematePos-Backend / RematePos-api | Requiere trazabilidad entre Gateway, purchase, inventory e invoice. | Pendiente |
+| ADR-018 | Docker Compose local | HU-057, HU-083 / `feature/HU-083-CAVY-rematepos-docker-compose` | RematePos-Backend / RematePos-api / RematePos-bd | DEV/QA/main ya tienen contenedores identificados; falta estandarizacion final. | En implementacion |
+| ADR-019 | Pipeline CI | HU-058, HU-079, HU-080 | Todos los repos | Hay workflow inicial; falta pipeline activo por repo y validacion QA. | Pendiente |
+| ADR-020 | Cache para catalogo de productos | HU-088 / `feature/HU-088-JSMV-product-catalog-cache` | RematePos-Backend | Requiere medir catalogo y definir estrategia cache invalidation. | Pendiente |
