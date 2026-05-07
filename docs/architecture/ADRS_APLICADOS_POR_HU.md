@@ -66,7 +66,7 @@ ADR-002 ya esta aplicado mediante la HU-053.
 | ADR-007 | HU-65 | `feature/HU-65-CAVY-sync-payment-sale-inventory-invoice` | RematePos-Backend | En implementacion |
 | ADR-008 | HU-055 | `feature/HU-055-CAVY-dynamic-product-filters` | RematePos-Backend | Pendiente |
 | ADR-009 | HU-054, HU-67, HU-68, HU-69 | `feature/HU-054-CAVY-event-driven-communication` | RematePos-Backend | Planeado |
-| ADR-010 | HU-054, HU-67, HU-69 | `feature/HU-085-CAVY-outbox-transaction-pattern` | RematePos-Backend | Pendiente |
+| ADR-010 | HU-085 | `feature/HU-085-CAVY-outbox-transaction-pattern` | RematePos-Backend | Pendiente |
 | ADR-011 | HU-056, HU-057, HU-082 | `feature/HU-82-CAVY-environment-strategy` | RematePos-Backend / RematePos-api | En implementacion |
 | ADR-012 | HU-086 | `feature/HU-086-AFAF-openapi-documentation` | RematePos-Backend / RematePos-api | Pendiente |
 | ADR-013 | HU-050 | `feature/HU-050-AFAF-frontend-feature-structure` | RematePos-Frontend | En implementacion |
@@ -134,7 +134,7 @@ ADR-002 ya esta aplicado mediante la HU-053.
 | ADR | Decision | HU / rama | Repositorio | Evidencia | Estado |
 | --- | --- | --- | --- | --- | --- |
 | ADR-012 | OpenAPI / Swagger | HU-086 / `feature/HU-086-AFAF-openapi-documentation` | RematePos-Backend / RematePos-api | Requiere documentacion OpenAPI consumible por frontend y QA. | Pendiente |
-| ADR-013 | Frontend por modulos/features | HU-050, HU-030, HU-035 / `feature/HU-30-AFAF-pos-sales-flow` | RematePos-Frontend | Frontend organizado por features como sales, billing, inventory, customers. | En implementacion |
+| ADR-013 | Frontend por modulos/features | HU-050 / `feature/HU-050-AFAF-frontend-feature-structure` | RematePos-Frontend | Frontend organizado por features como sales, billing, inventory, customers; HU-30 y HU-35 consumen esta estructura desde sus flujos funcionales. | En implementacion |
 | ADR-014 | Componentes compartidos | HU-051 / `feature/HU-051-AFAF-shared-components-library` | RematePos-Frontend | Requiere extraer controles comunes para botones, formularios, tablas y estados. | Pendiente |
 | ADR-015 | JWT y guards | HU-073, HU-074, HU-075 / `feature/HU-073-AFAF-frontend-visual-security` | RematePos-Frontend / RematePos-api | Seguridad visual, persistencia de sesion y guards estan planificados. | Planeado |
 | ADR-016 | Estado frontend por feature | HU-052 / `feature/HU-052-AFAF-feature-state-management` | RematePos-Frontend | Requiere formalizar estado de carrito, factura, sesion y productos por feature. | Pendiente |
