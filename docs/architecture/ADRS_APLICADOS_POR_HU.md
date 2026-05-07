@@ -148,3 +148,49 @@ ADR-002 ya esta aplicado mediante la HU-053.
 | ADR-018 | Docker Compose local | HU-057, HU-083 / `feature/HU-083-CAVY-rematepos-docker-compose` | RematePos-Backend / RematePos-api / RematePos-bd | DEV/QA/main ya tienen contenedores identificados; falta estandarizacion final. | En implementacion |
 | ADR-019 | Pipeline CI | HU-058, HU-079, HU-080 | Todos los repos | Hay workflow inicial; falta pipeline activo por repo y validacion QA. | Pendiente |
 | ADR-020 | Cache para catalogo de productos | HU-088 / `feature/HU-088-JSMV-product-catalog-cache` | RematePos-Backend | Requiere medir catalogo y definir estrategia cache invalidation. | Pendiente |
+
+## ADRs pendientes y HUs propuestas
+
+| ADR | Motivo de pendiente | HU propuesta |
+| --- | --- | --- |
+| ADR-008 | Los filtros dinamicos de productos deben evitar cargar listas completas y permitir busqueda escalable. | HU-055 |
+| ADR-010 | Se necesita outbox para consistencia eventual entre pagos, inventario y facturacion cuando haya eventos. | HU-085 |
+| ADR-012 | OpenAPI/Swagger debe documentar contratos para frontend, QA y Postman. | HU-086 |
+| ADR-017 | Logging estructurado y correlation ID debe permitir seguir una venta entre Gateway y microservicios. | HU-087 |
+| ADR-020 | Cache de catalogo debe mejorar rendimiento sin mostrar stock obsoleto. | HU-088 |
+
+## Roadmap de implementacion recomendado
+
+1. API Gateway.
+2. Documentacion ADR aplicada.
+3. Seguridad frontend/backend.
+4. Devoluciones.
+5. Ambientes DEV/QA/PROD.
+6. Separacion de `purchase-microservice`.
+7. `payment-service`.
+8. `cash-register-service`.
+9. `billing-service` con proveedor DIAN sandbox.
+10. Docker Compose del ecosistema RematePOS.
+11. QA integral.
+
+## Reglas de cierre por ADR
+
+Para marcar una ADR como aplicada, debe existir:
+
+- HU asociada.
+- Rama feature hija de `develop`.
+- Commits convencionales en ingles.
+- Repositorio correcto.
+- Evidencia funcional o documental.
+- PR hacia `develop`.
+- Revision o aprobacion segun el flujo del equipo.
+
+## Estado de este documento
+
+| Campo | Valor |
+| --- | --- |
+| HU | HU-84 |
+| Rama | `feature/HU-84-KSCH-document-applied-adrs` |
+| Repositorio | RematePos |
+| Tipo de cambio | Documentacion |
+| Estado esperado | Ready to merge into `develop` |
