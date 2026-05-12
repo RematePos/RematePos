@@ -64,3 +64,4 @@ El sistema se encuentra organizado en repositorios independientes para garantiza
 ## 📈 Proyección
 
 rematePOS está diseñado para evolucionar hacia una solución comercial real, preparada para integrarse con proveedores tecnológicos autorizados por la DIAN y cumplir con la normativa colombiana vigente en facturación electrónica.
+\n---\n\n## Documentation\n\nProject documentation is organized under `docs/`. See `docs/README.md` for the documentation index.
